@@ -3,8 +3,12 @@ import {configureStore} from '@reduxjs/toolkit';
 import {combineReducers} from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import {persistReducer, persistStore} from 'redux-persist';
+import ProductReducer from './slices/ProductSlice';
+import rootSaga from './sagas/saga';
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+  products: ProductReducer
+});
 
 const persistConfig = {
   key: 'root',
@@ -24,7 +28,7 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
-// sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSaga);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -1,13 +1,15 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 
 const MyProductsButton = () => {
-return (
-  <TouchableOpacity style={styles.button}>
-    <Text style={styles.buttonText}>My Products &gt;</Text>
-  </TouchableOpacity>
-);
-}
+  const nav = useNavigation();
+  return (
+    <TouchableOpacity style={styles.button} onPress={() => nav.navigate('MyProducts' as never)}>
+      <Text style={styles.buttonText}>My Products &gt;</Text>
+    </TouchableOpacity>
+  );
+};
 const styles = StyleSheet.create({
   button: {
     backgroundColor: 'white',
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'black',
-  }
+  },
 });
 
 export default MyProductsButton;
