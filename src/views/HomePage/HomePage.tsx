@@ -5,6 +5,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
+  BackHandler,
+  Button,
+  Modal,
 } from 'react-native';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import MyProductsButton from '../../components/Button/MyProductsButton/MyProductsButton';
@@ -15,10 +18,12 @@ import {RootState} from '../../services/store';
 import {fetchProducts} from '../../services/slices/ProductSlice';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import GridViewIcon from '../../assets/svg/GridViewIcon';
+import ExitModal from '../../components/Modal/ExitModal/ExitModal';
 
 const Home = () => {
   const [isGridView, setIsGridView] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [exitModalVisible, setExitModalVisible] = useState(false);
   const dispatch = useDispatch();
   const {products, loading, error} = useSelector(
     (state: RootState) => state.products,
@@ -33,8 +38,30 @@ const Home = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    const backAction = () => {
+      setExitModalVisible(true);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+
+  const handleCloseModal = () => {
+    setExitModalVisible(false);
+  };
+
+  const handleExitApp = () => {
+    BackHandler.exitApp();
+    setExitModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.navbar}>
@@ -64,7 +91,12 @@ const Home = () => {
         <FlatList
           data={searchQuery ? filteredProducts : products}
           renderItem={({item}) => (
-            <ProductCard key={item.id} product={item} isGridView={isGridView} button='Buy'/>
+            <ProductCard
+              key={item.id}
+              product={item}
+              isGridView={isGridView}
+              button="Buy"
+            />
           )}
           key={isGridView ? 'grid' : 'list'}
           numColumns={isGridView ? 2 : 1}
@@ -77,6 +109,17 @@ const Home = () => {
           }
         />
       </View>
+      <Modal
+        visible={exitModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={handleCloseModal}>
+        <ExitModal
+          visible={exitModalVisible}
+          onClose={handleCloseModal}
+          onExit={handleExitApp}
+        />
+      </Modal>
     </View>
   );
 };

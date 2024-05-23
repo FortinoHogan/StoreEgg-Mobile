@@ -1,17 +1,32 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
+import FullImageModal from '../../components/Modal/FullImageModal/FullImageModal';
 
 type DetailProductRouteProp = RouteProp<RootStackParamList, 'DetailProduct'>;
 
 const DetailProductPage: React.FC<{route: DetailProductRouteProp}> = ({
   route,
 }) => {
+  const [isVisible, setIsVisible] = React.useState(false);
   const {product, button} = route.params;
+
+  const handleModalClick = () => {
+    setIsVisible(!isVisible);
+  };
   return (
     <View style={styles.container}>
-      <Image source={{uri: product.image}} style={styles.productImage} />
+      <TouchableOpacity onPress={handleModalClick}>
+        <Image source={{uri: product.image}} style={styles.productImage} />
+      </TouchableOpacity>
       <View style={styles.hr} />
       <Text style={styles.productTitle}>{product.title}</Text>
       <View>
@@ -22,11 +37,17 @@ const DetailProductPage: React.FC<{route: DetailProductRouteProp}> = ({
         <Text style={styles.detailTitle}>Description</Text>
         <Text>{product.description}</Text>
       </View>
-      <TouchableOpacity style={button === 'Buy' ? styles.buyBtn : styles.sellBtn}>
+      <TouchableOpacity
+        style={button === 'Buy' ? styles.buyBtn : styles.sellBtn}>
         <Text style={button === 'Buy' ? styles.buyTxt : styles.sellTxt}>
           {button === 'Buy' ? 'Buy' : 'Sell'}
         </Text>
       </TouchableOpacity>
+      <FullImageModal
+        visible={isVisible}
+        product={product}
+        onClose={handleModalClick}
+      />
     </View>
   );
 };
