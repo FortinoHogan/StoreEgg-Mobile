@@ -5,7 +5,6 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';

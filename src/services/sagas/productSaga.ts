@@ -1,21 +1,21 @@
-import axios, {AxiosResponse, all} from 'axios';
-import {call, put, takeLatest} from 'redux-saga/effects';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import {
-    fetchProducts,
+  fetchProducts,
   fetchProductsError,
   fetchProductsSuccess,
 } from '../slices/ProductSlice';
-import {getProducts} from '../ProductService';
+import { getProducts } from '../ProductService';
+import { IProduct } from '../../interfaces/IProduct';
 
 function* fetchProductsSaga() {
   try {
-    const products = getProducts();
+    const products: IProduct[] = yield call(getProducts);
     yield put(fetchProductsSuccess(products));
   } catch (e: any) {
-    yield put(fetchProductsError(e));
+    yield put(fetchProductsError(e.message));
   }
 }
 
 export default function* ProductSaga() {
-  yield all([takeLatest(fetchProducts.type, fetchProductsSaga)]);
+  yield takeLatest(fetchProducts.type, fetchProductsSaga);
 }

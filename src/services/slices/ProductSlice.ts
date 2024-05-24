@@ -35,4 +35,5 @@ export const ProductSlice = createSlice({
 export const {fetchProducts, fetchProductsSuccess, fetchProductsError} =
   ProductSlice.actions;
 
-export default ProductSlice.reducer;
+const ProductReducer = ProductSlice.reducer;
+export default ProductReducer;

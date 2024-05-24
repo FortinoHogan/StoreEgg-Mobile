@@ -7,6 +7,7 @@ import {store} from './services/store';
 import MyProductsPage from './views/MyProductsPage/MyProductsPage';
 import DetailProductPage from './views/DetailProductPage/DetailProductPage';
 import { RootStackParamList } from './navigation/types';
+import MinigamePage from './views/MinigamePage/MinigamePage';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export default class App extends Component {
@@ -26,6 +27,13 @@ export default class App extends Component {
               component={DetailProductPage}
               options={({route}) => ({
                 title: route.params.product.title,
+              })}
+            />
+            <Stack.Screen
+              name="Minigame"
+              component={MinigamePage}
+              options={({route}) => ({
+                title: "Minigame",
               })}
             />
           </Stack.Navigator>

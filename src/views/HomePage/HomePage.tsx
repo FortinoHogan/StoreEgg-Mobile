@@ -6,8 +6,8 @@ import {
   ActivityIndicator,
   FlatList,
   BackHandler,
-  Button,
   Modal,
+  Button,
 } from 'react-native';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import MyProductsButton from '../../components/Button/MyProductsButton/MyProductsButton';
@@ -15,19 +15,22 @@ import MyCoin from '../../components/MyCoin/MyCoin';
 import ListViewIcon from '../../assets/svg/ListViewIcon';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../services/store';
-import {fetchProducts} from '../../services/slices/ProductSlice';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import GridViewIcon from '../../assets/svg/GridViewIcon';
 import ExitModal from '../../components/Modal/ExitModal/ExitModal';
+import { fetchProducts } from '../../services/slices/ProductSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MinigameButton from '../../components/Button/MinigameButton/MinigameButton';
 
 const Home = () => {
   const [isGridView, setIsGridView] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [exitModalVisible, setExitModalVisible] = useState(false);
-  const dispatch = useDispatch();
   const {products, loading, error} = useSelector(
     (state: RootState) => state.products,
   );
+  const coin = useSelector((state: RootState) => state.coins.amount);
+  const dispatch = useDispatch();
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -36,6 +39,10 @@ const Home = () => {
   const filteredProducts = products.filter(product =>
     product.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch])
 
   useEffect(() => {
     const backAction = () => {
@@ -62,13 +69,23 @@ const Home = () => {
     setExitModalVisible(false);
   };
 
+  const clearStorage = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('AsyncStorage cleared successfully!');
+    } catch (e) {
+      console.error('Failed to clear AsyncStorage:', e);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.navbar}>
         <SearchBar handleSearch={handleSearch} />
+        {/* <Button title="Clear Storage" onPress={clearStorage} /> */}
         <View style={styles.myProductContainer}>
           <MyProductsButton />
-          <MyCoin amount={500} />
+          <MyCoin amount={coin} />
         </View>
       </View>
       <View style={styles.homePage}>
@@ -108,6 +125,7 @@ const Home = () => {
             )
           }
         />
+        <MinigameButton />
       </View>
       <Modal
         visible={exitModalVisible}
@@ -148,8 +166,9 @@ const styles = StyleSheet.create({
     top: -50,
     zIndex: -1,
     display: 'flex',
-    paddingBottom: 240,
+    paddingBottom: 300,
     minHeight: '100%',
+    height: '110%',
   },
   homePageHeaderContainer: {
     display: 'flex',
