@@ -1,5 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Modal,
+  GestureResponderEvent,
+} from 'react-native';
 
 export interface IExitModal {
   visible: boolean;
@@ -8,32 +16,34 @@ export interface IExitModal {
 }
 
 const ExitModal = (props: IExitModal) => {
-  const { onClose, onExit, visible } = props;
+  const {onClose, onExit, visible} = props;
 
-  if (!visible) {
-    return null;
-  }
+  const handleStopPropagation = (e: GestureResponderEvent) => {
+    e.stopPropagation();
+  };
 
   return (
-    visible ? (
-    <View style={styles.overlay}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Are you sure you want to quit Storegg?</Text>
-        <Image
-          source={require('../../../assets/img/egg-broken.png')}
-          style={styles.image}
-        />
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={onExit}>
-            <Text style={styles.buttonTitle}>Yes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onClose}>
-            <Text style={styles.buttonTitle}>No</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-    ) : null
+    <Modal visible={visible} transparent animationType="slide">
+      <TouchableOpacity style={styles.overlay} onPress={onClose}>
+        <TouchableOpacity onPress={handleStopPropagation} activeOpacity={1} style={styles.container}>
+          <Text style={styles.title}>
+            Are you sure you want to quit Storegg?
+          </Text>
+          <Image
+            source={require('../../../assets/img/egg-broken.png')}
+            style={styles.image}
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={onExit}>
+              <Text style={styles.buttonTitle}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onClose}>
+              <Text style={styles.buttonTitle}>No</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
+    </Modal>
   );
 };
 

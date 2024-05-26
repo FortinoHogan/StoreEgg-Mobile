@@ -16,7 +16,7 @@ const ProductCard = (props: IProductCard) => {
             ? product.title.substring(0, 10)
             : product.title.substring(0, 25)}
         </Text>
-        <Text>${product.price}</Text>
+        <Text style={isGridView ? styles.gridPrice : {}}>${product.price}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginHorizontal: 10,
   },
+  gridPrice: {
+    textAlign: 'center',
+  }
 });
 
 export default ProductCard;

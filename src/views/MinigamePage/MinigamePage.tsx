@@ -5,6 +5,7 @@ import {RootStackParamList} from '../../navigation/types';
 import MinigameCoin from '../../components/MinigameCoin/MinigameCoin';
 import {useDispatch} from 'react-redux';
 import {addCoin} from '../../services/slices/CoinSlice';
+import { useTheme } from '../../contexts/ThemeContext';
 
 type MinigameRouteProp = RouteProp<RootStackParamList, 'Minigame'>;
 const MinigamePage: React.FC<{route: MinigameRouteProp}> = ({route}) => {
@@ -16,6 +17,7 @@ const MinigamePage: React.FC<{route: MinigameRouteProp}> = ({route}) => {
   const [contentText, setContentText] = useState('');
   const [footerText, setFooterText] = useState('');
   const dispatch = useDispatch();
+  const {darkMode} = useTheme();
   const imagePaths: {[key: string]: any} = {
     gold: require('../../assets/img/gold-coin.png'),
     silver: require('../../assets/img/silver-coin.png'),
@@ -62,7 +64,7 @@ const MinigamePage: React.FC<{route: MinigameRouteProp}> = ({route}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={darkMode ? styles.containerDark :styles.container}>
       <View style={styles.coinsContainer}>
         <MinigameCoin coin="gold" amount="100" />
         <MinigameCoin coin="silver" amount="50" />
@@ -72,21 +74,21 @@ const MinigamePage: React.FC<{route: MinigameRouteProp}> = ({route}) => {
         style={isClicked ? styles.bodyContainerAfter : styles.bodyContainer}>
         {isClicked ? (
           <>
-            <Text style={styles.fontBold}>Congratulations!</Text>
-            <Text style={styles.clickText}>You got a {contentText} coin!</Text>
+            <Text style={[styles.fontBold, darkMode && styles.textDark]}>Congratulations!</Text>
+            <Text style={[styles.clickText, darkMode && styles.textDark]}>You got a {contentText} coin!</Text>
             {coinImageSource && (
               <Image source={coinImageSource} style={styles.coinImage} />
             )}
           </>
         ) : (
-          <Text style={styles.clickText}>
+          <Text style={[styles.clickText, darkMode && styles.textDark]}>
             Click on the egg to get your prize!
           </Text>
         )}
         <TouchableOpacity onPress={handleClick} disabled={isClicked}>
           <Image source={imageSource} />
         </TouchableOpacity>
-        {isClicked && <Text style={styles.fontBold}>{footerText}</Text>}
+        {isClicked && <Text style={[styles.fontBold, darkMode && styles.textDark]}>{footerText}</Text>}
       </View>
     </View>
   );
@@ -95,6 +97,12 @@ const MinigamePage: React.FC<{route: MinigameRouteProp}> = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    flex: 1,
+  },
+  containerDark: {
+    padding: 20,
+    backgroundColor: '#313338',
+    flex: 1,
   },
   coinsContainer: {
     display: 'flex',
@@ -129,6 +137,9 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
   },
+  textDark: {
+    color: 'white',
+  }
 });
 
 export default MinigamePage;

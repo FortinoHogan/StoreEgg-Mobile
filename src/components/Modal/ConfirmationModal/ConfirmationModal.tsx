@@ -74,7 +74,7 @@ const ConfirmationModal = (props: IConfirmationModal) => {
         <SuccessModal
           visible={isSuccessModalVisible}
           onClose={() => {
-            onClose;
+            onClose();
             setIsSuccessModalVisible(false);
           }}
           product={product}

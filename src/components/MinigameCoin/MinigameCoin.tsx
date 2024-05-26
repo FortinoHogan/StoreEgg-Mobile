@@ -1,9 +1,11 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import {IMinigameCoin} from './IMinigameCoin';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const MinigameCoin = (props: IMinigameCoin) => {
   const {coin, amount} = props;
+  const {darkMode} = useTheme();
   switch (coin) {
     case 'gold':
       var imgUrl = require('../../assets/img/gold-coin.png');
@@ -20,7 +22,7 @@ const MinigameCoin = (props: IMinigameCoin) => {
   return (
     <View style={styles.container}>
       <Image source={imgUrl} style={styles.image} />
-      <Text style={styles.amount}>{amount}</Text>
+      <Text style={[styles.amount, darkMode && styles.textDark]}>{amount}</Text>
     </View>
   );
 };
@@ -37,6 +39,9 @@ const styles = StyleSheet.create({
   amount: {
     color: 'black',
     fontSize: 20,
+  },
+  textDark: {
+    color: 'white',
   }
 });
 

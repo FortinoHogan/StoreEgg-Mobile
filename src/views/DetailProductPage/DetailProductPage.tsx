@@ -4,6 +4,7 @@ import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
 import FullImageModal from '../../components/Modal/FullImageModal/FullImageModal';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal/ConfirmationModal';
+import { useTheme } from '../../contexts/ThemeContext';
 
 type DetailProductRouteProp = RouteProp<RootStackParamList, 'DetailProduct'>;
 
@@ -15,6 +16,7 @@ const DetailProductPage: React.FC<{route: DetailProductRouteProp}> = ({
     useState(false);
   const [buttonType, setButtonType] = useState<'Buy' | 'Sell'>('Buy');
   const {product, button} = route.params;
+  const {darkMode} = useTheme();
 
   const handleFullImageModalClick = () => {
     setIsFullImageVisible(!isFullImageVisible);
@@ -25,19 +27,19 @@ const DetailProductPage: React.FC<{route: DetailProductRouteProp}> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={darkMode ? styles.containerDark : styles.container}>
       <TouchableOpacity onPress={handleFullImageModalClick}>
         <Image source={{uri: product.image}} style={styles.productImage} />
       </TouchableOpacity>
-      <View style={styles.hr} />
-      <Text style={styles.productTitle}>{product.title}</Text>
+      <View style={darkMode ? styles.hrDark : styles.hr} />
+      <Text style={[styles.productTitle, darkMode && styles.textDark]}>{product.title}</Text>
       <View>
-        <Text style={styles.detailTitle}>Price</Text>
-        <Text>{product.price} Coins</Text>
+        <Text style={[styles.detailTitle, darkMode && styles.textDark]}>Price</Text>
+        <Text style={darkMode && styles.textDark}>{product.price} Coins</Text>
       </View>
       <View>
-        <Text style={styles.detailTitle}>Description</Text>
-        <Text>{product.description}</Text>
+        <Text style={[styles.detailTitle, darkMode && styles.textDark]}>Description</Text>
+        <Text style={darkMode && styles.textDark}>{product.description}</Text>
       </View>
       <TouchableOpacity
         style={button === 'Buy' ? styles.buyBtn : styles.sellBtn}
@@ -75,9 +77,20 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     gap: 10,
+    flex: 1,
+  },
+  containerDark: {
+    padding: 10,
+    gap: 10,
+    backgroundColor: '#313338',
+    flex: 1,
   },
   hr: {
     borderBottomColor: 'black',
+    borderBottomWidth: 1,
+  },
+  hrDark: {
+    borderBottomColor: 'white',
     borderBottomWidth: 1,
   },
   productTitle: {
@@ -120,6 +133,9 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     alignSelf: 'center',
   },
+  textDark: {
+    color: 'white',
+  }
 });
 
 export default DetailProductPage;

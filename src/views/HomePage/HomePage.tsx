@@ -8,6 +8,7 @@ import {
   BackHandler,
   Modal,
   Button,
+  Switch,
 } from 'react-native';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import MyProductsButton from '../../components/Button/MyProductsButton/MyProductsButton';
@@ -18,9 +19,10 @@ import {RootState} from '../../services/store';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import GridViewIcon from '../../assets/svg/GridViewIcon';
 import ExitModal from '../../components/Modal/ExitModal/ExitModal';
-import { fetchProducts } from '../../services/slices/ProductSlice';
+import {fetchProducts} from '../../services/slices/ProductSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MinigameButton from '../../components/Button/MinigameButton/MinigameButton';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const Home = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -31,6 +33,7 @@ const Home = () => {
   );
   const coin = useSelector((state: RootState) => state.coins.amount);
   const dispatch = useDispatch();
+  const {darkMode, toggleDarkMode} = useTheme();
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -42,7 +45,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     const backAction = () => {
@@ -69,17 +72,21 @@ const Home = () => {
     setExitModalVisible(false);
   };
 
-  const clearStorage = async () => {
-    try {
-      await AsyncStorage.clear();
-      console.log('AsyncStorage cleared successfully!');
-    } catch (e) {
-      console.error('Failed to clear AsyncStorage:', e);
-    }
+  const toggleDarkModeButton = () => {
+    toggleDarkMode();
   };
 
+  // const clearStorage = async () => {
+  //   try {
+  //     await AsyncStorage.clear();
+  //     console.log('AsyncStorage cleared successfully!');
+  //   } catch (e) {
+  //     console.error('Failed to clear AsyncStorage:', e);
+  //   }
+  // };
+
   return (
-    <View style={styles.container}>
+    <View style={darkMode ? styles.containerDark : styles.container}>
       <View style={styles.navbar}>
         <SearchBar handleSearch={handleSearch} />
         {/* <Button title="Clear Storage" onPress={clearStorage} /> */}
@@ -88,19 +95,25 @@ const Home = () => {
           <MyCoin amount={coin} />
         </View>
       </View>
-      <View style={styles.homePage}>
+      <View style={darkMode ? styles.homePageDark : styles.homePage}>
         <View style={styles.homePageHeaderContainer}>
-          <Text style={styles.homePageHeaderTitle}>Available Products</Text>
+          <Text style={darkMode ? styles.homePageHeaderTitleDark : styles.homePageHeaderTitle}>Available Products</Text>
+          <Switch
+            onValueChange={toggleDarkModeButton}
+            value={darkMode}
+          />
           {isGridView ? (
             <GridViewIcon
               height={40}
               width={40}
+              color={darkMode ? 'white' : 'black'}
               onPress={() => setIsGridView(!isGridView)}
             />
           ) : (
             <ListViewIcon
               height={40}
               width={40}
+              color={darkMode ? 'white' : 'black'}
               onPress={() => setIsGridView(!isGridView)}
             />
           )}
@@ -121,7 +134,7 @@ const Home = () => {
             loading ? (
               <ActivityIndicator size="large" style={styles.loading} />
             ) : (
-              <Text>{error ? `Error: ${error}` : 'No products available'}</Text>
+              <Text style={styles.errorText}>{error ? `Error: ${error}` : 'No products available'}</Text>
             )
           }
         />
@@ -147,6 +160,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#8775A9',
     flex: 1,
   },
+  containerDark: {
+    backgroundColor: '#313338',
+    flex: 1,
+  },
   navbar: {
     padding: 30,
   },
@@ -158,6 +175,20 @@ const styles = StyleSheet.create({
   },
   homePage: {
     backgroundColor: 'white',
+    elevation: 30,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 30,
+    position: 'relative',
+    top: -50,
+    zIndex: -1,
+    display: 'flex',
+    paddingBottom: 300,
+    minHeight: '100%',
+    height: '110%',
+  },
+  homePageDark: {
+    backgroundColor: '#1E1F22',
     elevation: 30,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -183,9 +214,18 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: '900',
   },
+  homePageHeaderTitleDark: {
+    color: 'white',
+    fontSize: 23,
+    fontWeight: '900',
+  },
   loading: {
     marginTop: 25,
   },
+  errorText: {
+    textAlign: 'center',
+    color: 'red',
+  }
 });
 
 export default Home;
