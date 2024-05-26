@@ -5,11 +5,13 @@ import createSagaMiddleware from 'redux-saga';
 import {persistReducer, persistStore} from 'redux-persist';
 import ProductReducer from './slices/ProductSlice';
 import rootSaga from './sagas/saga';
-import CoinReducer from './slices/coinSlice';
+import CoinReducer from './slices/CoinSlice';
+import MyProductReducer from './slices/MyProductSlice';
 
 const rootReducer = combineReducers({
   products: ProductReducer,
-  coins: CoinReducer
+  coins: CoinReducer,
+  myProducts: MyProductReducer,
 });
 
 const persistConfig = {

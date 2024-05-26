@@ -3,8 +3,8 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
 import MinigameCoin from '../../components/MinigameCoin/MinigameCoin';
-import { useDispatch } from 'react-redux';
-import { addCoin } from '../../services/slices/coinSlice';
+import {useDispatch} from 'react-redux';
+import {addCoin} from '../../services/slices/CoinSlice';
 
 type MinigameRouteProp = RouteProp<RootStackParamList, 'Minigame'>;
 const MinigamePage: React.FC<{route: MinigameRouteProp}> = ({route}) => {
@@ -58,7 +58,7 @@ const MinigamePage: React.FC<{route: MinigameRouteProp}> = ({route}) => {
     setCoinImageSource(imagePaths[coinImage]);
     setContentText(coinImage);
     setFooterText(coinText);
-    dispatch(addCoin(coinValue))
+    dispatch(addCoin(coinValue));
   };
 
   return (
@@ -68,12 +68,15 @@ const MinigamePage: React.FC<{route: MinigameRouteProp}> = ({route}) => {
         <MinigameCoin coin="silver" amount="50" />
         <MinigameCoin coin="bronze" amount="20" />
       </View>
-      <View style={isClicked ? styles.bodyContainerAfter : styles.bodyContainer}>
+      <View
+        style={isClicked ? styles.bodyContainerAfter : styles.bodyContainer}>
         {isClicked ? (
           <>
             <Text style={styles.fontBold}>Congratulations!</Text>
             <Text style={styles.clickText}>You got a {contentText} coin!</Text>
-            {coinImageSource && <Image source={coinImageSource} style={styles.coinImage}/>}
+            {coinImageSource && (
+              <Image source={coinImageSource} style={styles.coinImage} />
+            )}
           </>
         ) : (
           <Text style={styles.clickText}>
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
   coinImage: {
     height: 60,
     width: 60,
-  }
+  },
 });
 
 export default MinigamePage;

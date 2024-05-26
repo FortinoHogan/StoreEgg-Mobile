@@ -1,29 +1,32 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/types';
 import FullImageModal from '../../components/Modal/FullImageModal/FullImageModal';
+import ConfirmationModal from '../../components/Modal/ConfirmationModal/ConfirmationModal';
 
 type DetailProductRouteProp = RouteProp<RootStackParamList, 'DetailProduct'>;
 
 const DetailProductPage: React.FC<{route: DetailProductRouteProp}> = ({
   route,
 }) => {
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isFullImageVisible, setIsFullImageVisible] = useState(false);
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] =
+    useState(false);
+  const [buttonType, setButtonType] = useState<'Buy' | 'Sell'>('Buy');
   const {product, button} = route.params;
 
-  const handleModalClick = () => {
-    setIsVisible(!isVisible);
+  const handleFullImageModalClick = () => {
+    setIsFullImageVisible(!isFullImageVisible);
   };
+
+  const handleConfirmationModalClick = () => {
+    setIsConfirmationModalVisible(!isConfirmationModalVisible);
+  };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handleModalClick}>
+      <TouchableOpacity onPress={handleFullImageModalClick}>
         <Image source={{uri: product.image}} style={styles.productImage} />
       </TouchableOpacity>
       <View style={styles.hr} />
@@ -37,15 +40,32 @@ const DetailProductPage: React.FC<{route: DetailProductRouteProp}> = ({
         <Text>{product.description}</Text>
       </View>
       <TouchableOpacity
-        style={button === 'Buy' ? styles.buyBtn : styles.sellBtn}>
+        style={button === 'Buy' ? styles.buyBtn : styles.sellBtn}
+        onPress={
+          button === 'Buy'
+            ? () => {
+                handleConfirmationModalClick();
+                setButtonType('Buy');
+              }
+            : () => {
+                handleConfirmationModalClick();
+                setButtonType('Sell');
+              }
+        }>
         <Text style={button === 'Buy' ? styles.buyTxt : styles.sellTxt}>
           {button === 'Buy' ? 'Buy' : 'Sell'}
         </Text>
       </TouchableOpacity>
       <FullImageModal
-        visible={isVisible}
+        visible={isFullImageVisible}
         product={product}
-        onClose={handleModalClick}
+        onClose={handleFullImageModalClick}
+      />
+      <ConfirmationModal
+        visible={isConfirmationModalVisible}
+        product={product}
+        onClose={handleConfirmationModalClick}
+        type={buttonType}
       />
     </View>
   );
